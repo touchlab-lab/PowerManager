@@ -1,7 +1,9 @@
 package com.powermanager.android.powermanager;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -10,7 +12,17 @@ public class MainActivity extends ActionBarActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        int user = AppPrefs.getInstance(getApplicationContext()).getUserId();
+        if (user==-1){
+            startActivity(new Intent(getApplicationContext(),LogInActivity.class));
+            return;
+        }
         setContentView(R.layout.activity_main);
+        IntentFilter ifilter=new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        ifilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        ifilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        registerReceiver(new PowerConnectionReceiver(),ifilter);
+
     }
 
     @Override

@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity
+            android:name="com.powermanager.android.powermanager.LogInActivity"
+            android:label="Log In" >
 
+        </activity>
+    </application>
 </manifest>
