@@ -8,6 +8,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 import java.util.concurrent.TimeUnit;
 
+import co.touchlab.android.threading.errorcontrol.NetworkException;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -22,41 +23,25 @@ import retrofit.converter.GsonConverter;
 public class DataHelper{
     public static final int CONNECT_TIMEOUT=45;
     public static final int READ_TIMEOUT=30;
-    public static final String JSON_DATE_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    public static final String JSON_DATE_FORMAT_SHORT="yyyy-MM-dd'T'HH:mm:ss'Z'";
-
-    public static RestAdapter.Builder makeSuperbusRequestAdapterBuilder(Context context,String dateTimeFormat){
-        return makeRequestAdapterBuilder(context,new ErrorHandler(){
-            @Override
-            public Throwable handleError(RetrofitError cause){
-                return null;
-            }
-        },dateTimeFormat);
-    }
 
     public static RestAdapter makeRequestAdapter(final Context context){
-        return makeRequestAdapterBuilder(context,JSON_DATE_FORMAT_SHORT).build();
+        return makeRequestAdapterBuilder(context, new RetrofitErrorHandler()).build();
     }
 
-    public static RestAdapter.Builder makeRequestAdapterBuilder(final Context context,String dateTimeFormat){
-        return makeRequestAdapterBuilder(context,new RetrofitErrorHandler(),dateTimeFormat);
-    }
-
-    private static RestAdapter.Builder makeRequestAdapterBuilder(final Context context,ErrorHandler errorHandler,String dateTimeFormat){
+    private static RestAdapter.Builder makeRequestAdapterBuilder(final Context context,ErrorHandler errorHandler){
         RequestInterceptor requestInterceptor=new RequestInterceptor(){
             @Override
             public void intercept(RequestFacade request){
                 request.addHeader("Accept","application/json");
                 AppPrefs instance=AppPrefs.getInstance(context);
 
-                if (instance.getType()!=null)
-                    request.addHeader("X-Auth-Token",instance.getType());
-                if(instance.getUserToken()!=null)
-                    request.addHeader("X-Auth-Token",instance.getUserToken());
+                if(instance.getUserToken()!=null){
+                    request.addHeader("Authorization","Bearer "+instance.getUserToken());
+                }
             }
         };
 
-        Gson gson=new GsonBuilder().setDateFormat(dateTimeFormat).create();
+        Gson gson=new GsonBuilder().create();
 
         GsonConverter gsonConverter=new GsonConverter(gson);
         String baseURL=context==null?"https://winkapi.quirky.com/":context.getString((R.string.baseurl));
@@ -75,7 +60,7 @@ public class DataHelper{
         @Override
         public Throwable handleError(RetrofitError cause){
             if(cause.isNetworkError()){
-                return new Exception(cause.getCause());
+                return new NetworkException(cause.getCause());
             }
 
             return cause;

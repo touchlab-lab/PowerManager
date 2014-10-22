@@ -1,9 +1,9 @@
 package com.powermanager.android.powermanager.Tasks;
-import com.powermanager.android.powermanager.BaseResponse;
+
 /**
  * @author zafrani (david@touchlab.co).
  */
-public class LoginResponse extends BaseResponse{
+public class LoginResponse{
     public LoginResponseData data;
     public class LoginResponseData{
         public String access_token;

@@ -14,6 +14,9 @@ public class AppPrefs{
     public static final String USER_REFRESH="USER_REFRESH";
     public static final String USER_TYPE="USER_TYPE";
 
+    public static final String TURNON="TURNON";
+    public static final String TURNOFF="TURNOFF";
+
     public static synchronized AppPrefs getInstance(Context context){
         if(instance==null){
             instance=new AppPrefs();
@@ -40,5 +43,27 @@ public class AppPrefs{
         prefs.edit().putString(USER_TOKEN,user.data.access_token).apply();
         prefs.edit().putString(USER_REFRESH,user.data.refresh_token).apply();
         prefs.edit().putString(USER_TYPE,user.data.token_type).apply();
+    }
+    public void setTurnOffPower(int power){
+        prefs.edit().putInt(TURNOFF,power).apply();
+
+    }
+    public void setTurnOnPower(int power){
+        prefs.edit().putInt(TURNON,power).apply();
+
+    }
+    public int getTurnOnPowr(){
+        if(prefs.contains(TURNON))
+            return prefs.getInt(TURNON,-1);
+        else
+            return -1;
+
+    }
+    public int getTurnOffPowr(){
+        if(prefs.contains(TURNOFF))
+            return prefs.getInt(TURNOFF,-1);
+        else
+            return -1;
+
     }
 }

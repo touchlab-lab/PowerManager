@@ -4,16 +4,22 @@ import android.content.Context;
 import com.powermanager.android.powermanager.DataHelper;
 import com.powermanager.android.powermanager.Tasks.API.QuirkyCalls;
 
-import java.util.Map;
-
 import co.touchlab.android.threading.tasks.TaskQueue;
 /**
  * @author zafrani (david@touchlab.co).
  */
-public class WinkTask extends TaskQueue.Task{
+public class ChangePowerTask extends TaskQueue.Task{
+    private String powerId;
+    private boolean turnOn;
+
+    public ChangePowerTask(String powerId,boolean turnOn){
+        this.powerId=powerId;
+        this.turnOn=turnOn;
+    }
+
     @Override
     protected void run(Context context) throws Exception{
-       Map res = DataHelper.makeRequestAdapter(context).create(QuirkyCalls.class).wink();
+        DataHelper.makeRequestAdapter(context).create(QuirkyCalls.class).changePower(powerId);
     }
 
     @Override
