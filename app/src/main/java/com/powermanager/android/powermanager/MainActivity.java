@@ -28,6 +28,8 @@ public class MainActivity extends ActionBarActivity{
         ifilter.addAction(Intent.ACTION_POWER_CONNECTED);
         ifilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         registerReceiver(new PowerConnectionReceiver(),ifilter);
+        AppPrefs.getInstance(getApplicationContext()).setTurnOffPower(80);
+        AppPrefs.getInstance(getApplicationContext()).setTurnOffPower(40);
 
     }
 
