@@ -7,17 +7,23 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.powermanager.android.powermanager.Tasks.WinkTask;
+
+import co.touchlab.android.threading.tasks.TaskQueue;
+
 public class MainActivity extends ActionBarActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        int user = AppPrefs.getInstance(getApplicationContext()).getUserId();
-        if (user==-1){
+        String user = AppPrefs.getInstance(getApplicationContext()).getUserToken();
+        if (user==null){
             startActivity(new Intent(getApplicationContext(),LogInActivity.class));
             return;
         }
+
         setContentView(R.layout.activity_main);
+        TaskQueue.execute(getApplicationContext(),new WinkTask());
         IntentFilter ifilter=new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         ifilter.addAction(Intent.ACTION_POWER_CONNECTED);
         ifilter.addAction(Intent.ACTION_POWER_DISCONNECTED);

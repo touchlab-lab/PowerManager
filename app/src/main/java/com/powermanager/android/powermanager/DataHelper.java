@@ -49,6 +49,8 @@ public class DataHelper{
                 request.addHeader("Accept","application/json");
                 AppPrefs instance=AppPrefs.getInstance(context);
 
+                if (instance.getType()!=null)
+                    request.addHeader("X-Auth-Token",instance.getType());
                 if(instance.getUserToken()!=null)
                     request.addHeader("X-Auth-Token",instance.getUserToken());
             }
